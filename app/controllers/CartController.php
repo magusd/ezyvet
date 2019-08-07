@@ -6,6 +6,7 @@ class CartController
 {
     public function index()
     {
-        return 'ok';
+        return views('cart/index', ['name' => 'Jonathan']);
+//        return 'ok';
     }
 }

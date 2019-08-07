@@ -21,9 +21,12 @@
     "autoload": {
         "psr-4": {
             "EzyVet\\": "app/"
-        }
+        },
+        "files": [
+            "app/helpers.php"
+        ]
     },
-    "autoload-dev": {
+   "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
         }

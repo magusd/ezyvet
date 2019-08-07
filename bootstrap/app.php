@@ -1,4 +1,6 @@
 <?php
+
+use League\Plates\Engine;
 use Symfony\Component\Dotenv\Dotenv;
 use \Illuminate\Container\Container;
 require '../vendor/illuminate/support/helpers.php';
@@ -6,29 +8,44 @@ require '../vendor/illuminate/support/helpers.php';
 
 class App
 {
+    protected static $container;
     public function __construct()
     {
         $this->whoops();
         $this->env();
 
         // Create a service container
-        $container = new Container();
+        self::$container = new Container();
         // Create a request from server variables, and bind it to the container; optional
-        $container->singleton('app', 'Illuminate\Container\Container');
+        self::$container->singleton('app', 'Illuminate\Container\Container');
         $request = \Illuminate\Http\Request::capture();
-        $container->instance('Illuminate\Http\Request', $request);
+        self::$container->instance('Illuminate\Http\Request', $request);
         // Using Illuminate/Events/Dispatcher here (not required); any implementation of
         // Illuminate/Contracts/Event/Dispatcher is acceptable
-        $events = new \Illuminate\Events\Dispatcher($container);
+        $events = new \Illuminate\Events\Dispatcher(self::$container);
         // Create the router instance
-        $router = new \Illuminate\Routing\Router($events, $container);
+        $router = new \Illuminate\Routing\Router($events, self::$container);
         $router->namespace('EzyVet\Controllers')->group(function() use ($router){
             // Load the routes
             require '../routes/web.php';
         });
+        $this->views();
+
         $response = $router->dispatch($request);
         // Send the response back to the browser
         $response->send();
+    }
+
+    public static function make($alias)
+    {
+        return self::$container->make($alias);
+    }
+
+    public function views()
+    {
+        self::$container->singleton('views',function(){
+            return new League\Plates\Engine('../resources/views');
+        });
     }
 
     /**
