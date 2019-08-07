@@ -1,9 +1,7 @@
 <?php
 
 require '../vendor/autoload.php';
-require '../src/bootstrap/app.php';
-
-$app = new App();
+require '../bootstrap/app.php';
 
 // ######## please do not alter the following code ########
 $products = [
@@ -15,4 +13,5 @@ $products = [
 ];
 // ########################################################
 
-echo 'yay';
+$app = new App();
+
