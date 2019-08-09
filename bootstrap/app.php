@@ -6,9 +6,20 @@ use \Illuminate\Container\Container;
 require '../vendor/illuminate/support/helpers.php';
 
 
+/**
+ * Class App
+ */
 class App
 {
+    /**
+     * @var Container
+     */
     protected static $container;
+
+    /**
+     * App constructor.
+     * @throws Exception
+     */
     public function __construct()
     {
         $this->whoops();
@@ -18,6 +29,16 @@ class App
         self::$container = new Container();
         // Create a request from server variables, and bind it to the container; optional
         self::$container->singleton('app', 'Illuminate\Container\Container');
+
+        $this->router();
+        $this->cache();
+        $this->views();$response = $router->dispatch($request);
+        // Send the response back to the browser
+        $response->send();
+    }
+
+    protected function router()
+    {
         $request = \Illuminate\Http\Request::capture();
         self::$container->instance('Illuminate\Http\Request', $request);
         // Using Illuminate/Events/Dispatcher here (not required); any implementation of
@@ -29,18 +50,22 @@ class App
             // Load the routes
             require '../routes/web.php';
         });
-        $this->views();
-
-        $response = $router->dispatch($request);
-        // Send the response back to the browser
-        $response->send();
     }
 
+    /**
+     * @param $alias
+     *
+     * @return mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public static function make($alias)
     {
         return self::$container->make($alias);
     }
 
+    /**
+     *
+     */
     public function views()
     {
         self::$container->singleton('views',function(){
