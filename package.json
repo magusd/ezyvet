@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "gulp": "^4.0.2",
     "gulp-phpunit": "^0.26.0",
     "gulp-util": "^3.0.8"

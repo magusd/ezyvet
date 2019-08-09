@@ -1,8 +1,9 @@
 <?php
 
-use League\Plates\Engine;
+use Illuminate\Container\Container;
+use Illuminate\Database\Capsule\Manager as Eloquent;
 use Symfony\Component\Dotenv\Dotenv;
-use \Illuminate\Container\Container;
+
 require '../vendor/illuminate/support/helpers.php';
 
 
@@ -29,15 +30,30 @@ class App
         self::$container = new Container();
         // Create a request from server variables, and bind it to the container; optional
         self::$container->singleton('app', 'Illuminate\Container\Container');
-
-        $this->router();
-        $this->cache();
-        $this->views();$response = $router->dispatch($request);
-        // Send the response back to the browser
-        $response->send();
+        $this->database();
+//        $this->cache();
+        $this->views();
     }
 
-    protected function router()
+    public function database()
+    {
+        $eloquent = new Eloquent;
+
+        $eloquent->addConnection(array(
+            'driver' => 'mysql',
+            'host' => getenv('DB_HOST'),
+            'database' => getenv('DB_DATABASE'),
+            'username' => getenv('DB_USERNAME'),
+            'password' => getenv('DB_PASSWORD'),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => ''
+        ));
+
+        $eloquent->bootEloquent();
+    }
+
+    public function web()
     {
         $request = \Illuminate\Http\Request::capture();
         self::$container->instance('Illuminate\Http\Request', $request);
@@ -50,6 +66,9 @@ class App
             // Load the routes
             require '../routes/web.php';
         });
+        $response = $router->dispatch($request);
+        // Send the response back to the browser
+        $response->send();
     }
 
     /**

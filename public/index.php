@@ -5,3 +5,5 @@ require '../bootstrap/app.php';
 
 $app = new App();
 
+$app->web();
+
