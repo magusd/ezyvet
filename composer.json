@@ -17,7 +17,8 @@
         "league/container": "^3.3",
         "illuminate/routing": "^5.8",
       "illuminate/events": "^5.8",
-      "illuminate/database": "^5.8"
+      "illuminate/database": "^5.8",
+      "robmorgan/phinx": "^0.10.8"
     },
     "autoload": {
         "psr-4": {

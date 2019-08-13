@@ -37,20 +37,23 @@ class App
 
     public function database()
     {
-        $eloquent = new Eloquent;
+        self::$container->singleton('eloquent', function () {
+            $eloquent = new Eloquent;
 
-        $eloquent->addConnection(array(
-            'driver' => 'mysql',
-            'host' => getenv('DB_HOST'),
-            'database' => getenv('DB_DATABASE'),
-            'username' => getenv('DB_USERNAME'),
-            'password' => getenv('DB_PASSWORD'),
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => ''
-        ));
+            $eloquent->addConnection(array(
+                'driver' => 'mysql',
+                'host' => getenv('DB_HOST'),
+                'database' => getenv('DB_DATABASE'),
+                'username' => getenv('DB_USERNAME'),
+                'password' => getenv('DB_PASSWORD'),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => ''
+            ));
 
-        $eloquent->bootEloquent();
+            $eloquent->bootEloquent();
+            return $eloquent;
+        });
     }
 
     public function web()
